@@ -164,7 +164,8 @@ The app itself.
 
 Dockerfile which contains the definition for the container.
 
-	``` $ cat Dockerfile 
+```
+	$ cat Dockerfile 
 	# Use an official Python runtime as a parent image
 	FROM python:2.7-slim
 	
@@ -185,51 +186,54 @@ Dockerfile which contains the definition for the container.
 	
 	# Run app.py when the container launches
 	CMD ["python", "app.py"]
-	```
+```
 
 To build the app run the following command.
 
-	` $ docker build -t <appname> . `
+  ` $ docker build -t <appname> . `
 
 	e.g:
 
-	` docker build -t helloapp . `
+  ` docker build -t helloapp . `
 
 Image will be added to the local machine docker registry.
 
-	``` $ docker images 
+``` 
+	  $ docker images 
 	    REPOSITORY                 TAG                 IMAGE ID            CREATED             SIZE
 	    helloapp                   latest              d9e8193e0ecf        22 hours ago        148MB
-	```
+```
 	
 	OR
 
-	` $ docker image ls `
+  ` $ docker image ls `
 
 ### Running the app
 
 To run the app run the command. This will start the container using the image from local machine registry.
 
-	` $ docker run -p <HostIP>:<HostPort>:<ContainerPort> <ImageName>
+  ` $ docker run -p <HostIP>:<HostPort>:<ContainerPort> <ImageName>
 
-	` $ docker run -p 80:80 helloapp `
+  ` $ docker run -p 80:80 helloapp `
 
 Test the app by accessing the url.
 
-	``` $ curl http://127.0.0.1
+```
+	  $ curl http://127.0.0.1
 	    <h3>Hello World!</h3><b>Hostname:</b> c79723544b3c<br/><b>Visits:</b> <i>cannot connect to Redis, counter disabled</i> 
-	```
+```
 
 Run the app in detached mode.
 
-	` $ docker run -d -p 80:80 helloapp `
+  ` $ docker run -d -p 80:80 helloapp `
 
 Use the following command to check the running containers.
 
-	``` $ docker container ls
+```
+	    $ docker container ls
 	      CONTAINER ID        IMAGE               COMMAND             CREATED             STATUS              PORTS                    NAMES
 	      c79723544b3c        helloapp            "python app.py"     3 minutes ago       Up 4 minutes        127.0.0.1:4000->80/tcp   keen_stonebraker 
-	```
+```
 
 
 ### Publish the Image
