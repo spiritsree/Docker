@@ -1,5 +1,21 @@
 # Docker
 
+## Table of Contents
+
+* [Installation](#installation)
+..* [CentOS](#centos)
+..* [Ubuntu](#ubuntu)
+..* [Scripted Installation](#centos)
+* [Uninstall Docker](#uninstall-docker)
+..* [CentOS](#centos)
+..* [Ubuntu](#ubuntu)
+* [Docker Containers](#docker-containers)
+..* [Building the APP](#building-the-app)
+..* [Running the app](#running-the-app)
+..* [Publish the Image](#publish-the-image)
+* [Docker Services](#docker-services)
+* [Cheat Sheet](#cheat-sheet)
+
 ## Installation
 
 ### CentOS
@@ -194,7 +210,7 @@ To build the app run the following command.
 
    ` $ docker build -t <appname> . `
 
-	e.g:
+   e.g:
 
    ` docker build -t helloapp . `
 
@@ -206,7 +222,7 @@ Image will be added to the local machine docker registry.
 	    helloapp                   latest              d9e8193e0ecf        22 hours ago        148MB
    ```
 	
-	OR
+   OR
 
    ` $ docker image ls `
 
@@ -214,7 +230,7 @@ Image will be added to the local machine docker registry.
 
 To run the app run the command. This will start the container using the image from local machine registry.
 
-   ` $ docker run -p <HostIP>:<HostPort>:<ContainerPort> <ImageName>
+   ` $ docker run -p <HostIP>:<HostPort>:<ContainerPort> <ImageName> `
 
    ` $ docker run -p 80:80 helloapp `
 
@@ -266,7 +282,7 @@ Use the following command to check the running containers.
 
    ` $ docker run -p 80:80 <Username>/<Repository>:<Tag> `
 
-## Services
+## Docker Services
 
 
 
