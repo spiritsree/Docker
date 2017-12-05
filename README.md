@@ -62,27 +62,27 @@
 
     ``` $ apt-cache madison docker-ce 
         docker-ce | 17.09.0~ce-0~ubuntu | https://download.docker.com/linux/ubuntu xenial/stable amd64 Packages
-```
+    ```
 
     ` $ sudo apt-get install docker-ce=<VERSION> `
 
 8. Test docker.
 
-	` $ sudo docker run hello-world `
+   ` $ sudo docker run hello-world `
 
 9. Check docker version.
 
-	` $ docker --version `
+   ` $ docker --version `
 
 ### Scripted Installation
 
 1. Download the script.
 
-	` curl -fsSL get.docker.com -o get-docker.sh `
+   ` curl -fsSL get.docker.com -o get-docker.sh `
 
 2. Run
 
-	` sudo sh get-docker.sh `
+   ` sudo sh get-docker.sh `
 
 
 ## Uninstall Docker
@@ -91,21 +91,21 @@
 
 1. Remove docker.
 
-	` $ sudo yum remove docker-ce `
+   ` $ sudo yum remove docker-ce `
 
 2. To delete all images, containers, and volumes.
 
-	` $ sudo rm -rf /var/lib/docker `
+   ` $ sudo rm -rf /var/lib/docker `
 
 ### Ubuntu
 
 1. Remove docker.
 
-	` $ sudo apt-get purge docker-ce `
+   ` $ sudo apt-get purge docker-ce `
 
 2. To delete all images, containers, and volumes.
 
-	` $ sudo rm -rf /var/lib/docker `
+   ` $ sudo rm -rf /var/lib/docker `
 
 
 ## Docker Containers
@@ -272,7 +272,7 @@ Use the following command to check the running containers.
 
 ## Cheat Sheet
 
-	```
+   ```
 	docker build -t <appname> .  		# Create image using this directory's Dockerfile
 	docker run -p 80:80 <appname>  		# Run "app" mapping port 80 to 80
 	docker run -d -p 80:80 <appname>         # Same thing, but in detached mode
@@ -289,4 +289,4 @@ Use the following command to check the running containers.
 	docker tag <image> username/repository:tag  	# Tag <image> for upload to registry
 	docker push username/repository:tag            # Upload tagged image to registry
 	docker run username/repository:tag                   # Run image from a registry
-	```
+   ```
