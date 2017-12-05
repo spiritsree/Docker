@@ -119,13 +119,20 @@ To build the app, you need to have all the required files in directory.
 
 	` $ cd app `
 
+The directory with all the required files.
+
 	``` $ ls
-	     Dockerfile		app.py		requirements.txt ```
+	     Dockerfile		app.py		requirements.txt
+	```
+
+Required python modules.
 
 	``` $ cat requirements.txt
 	      Flask
 	      Redis
 	```
+
+The app itself.
 
 	```
 	$ cat app.py 
@@ -154,6 +161,8 @@ To build the app, you need to have all the required files in directory.
         if __name__ == "__main__":
             app.run(host='0.0.0.0', port=80)
 	```
+
+Dockerfile which contains the definition for the container.
 
 	``` $ cat Dockerfile 
 	# Use an official Python runtime as a parent image
