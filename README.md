@@ -260,7 +260,7 @@ To build the app run the following command.
 $ docker build -t <appname> .
 ```
 
-	e.g:
+  e.g:
 
 ```
 docker build -t helloapp .
@@ -274,7 +274,7 @@ $ docker images
   helloapp                   latest              d9e8193e0ecf        22 hours ago        148MB
 ```
 	
-   OR
+  OR
 
 ```
 $ docker image ls
@@ -328,7 +328,7 @@ $ docker login
 $ docker tag <Image> <Username>/<Repository>:<Tag>
 ```
 
-	for e.g:
+  for e.g:
 
 ```
 $ docker tag helloapp spiritsree/test_app:test
