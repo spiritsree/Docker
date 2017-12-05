@@ -61,7 +61,8 @@
    * On production systems, you should install a specific version of Docker CE instead of always using the latest. This output is truncated. List the available versions.
 
     ``` $ apt-cache madison docker-ce 
-        docker-ce | 17.09.0~ce-0~ubuntu | https://download.docker.com/linux/ubuntu xenial/stable amd64 Packages ```
+        docker-ce | 17.09.0~ce-0~ubuntu | https://download.docker.com/linux/ubuntu xenial/stable amd64 Packages
+```
 
     ` $ sudo apt-get install docker-ce=<VERSION> `
 
@@ -117,25 +118,25 @@ Docker container is defined using a Dockerfile.
 
 To build the app, you need to have all the required files in directory.
 
-	` $ cd app `
+   ` $ cd app `
 
 The directory with all the required files.
 
-	```
-		$ ls
-	     Dockerfile		app.py		requirements.txt
-	```
+   ```
+   $ ls
+     Dockerfile		app.py		requirements.txt
+   ```
 
 Required python modules.
-
-	``` $ cat requirements.txt
-	      Flask
-	      Redis
-	```
+ 
+   ``` $ cat requirements.txt
+	 Flask
+	 Redis
+   ```
 
 The app itself.
 
-	```
+   ```
 	$ cat app.py 
 	from flask import Flask
 	from redis import Redis, RedisError
@@ -161,11 +162,11 @@ The app itself.
 
         if __name__ == "__main__":
             app.run(host='0.0.0.0', port=80)
-	```
+   ```
 
 Dockerfile which contains the definition for the container.
 
-	```
+   ```
 	$ cat Dockerfile 
 	# Use an official Python runtime as a parent image
 	FROM python:2.7-slim
@@ -187,83 +188,83 @@ Dockerfile which contains the definition for the container.
 	
 	# Run app.py when the container launches
 	CMD ["python", "app.py"]
-	```
+   ```
 
 To build the app run the following command.
 
-	` $ docker build -t <appname> . `
+   ` $ docker build -t <appname> . `
 
 	e.g:
 
-	` docker build -t helloapp . `
+   ` docker build -t helloapp . `
 
 Image will be added to the local machine docker registry.
 
-	``` 
+   ``` 
 	  $ docker images 
 	    REPOSITORY                 TAG                 IMAGE ID            CREATED             SIZE
 	    helloapp                   latest              d9e8193e0ecf        22 hours ago        148MB
-	```
+   ```
 	
 	OR
 
-	` $ docker image ls `
+   ` $ docker image ls `
 
 ### Running the app
 
 To run the app run the command. This will start the container using the image from local machine registry.
 
-	` $ docker run -p <HostIP>:<HostPort>:<ContainerPort> <ImageName>
+   ` $ docker run -p <HostIP>:<HostPort>:<ContainerPort> <ImageName>
 
-	` $ docker run -p 80:80 helloapp `
+   ` $ docker run -p 80:80 helloapp `
 
 Test the app by accessing the url.
 
-	```
-	  $ curl http://127.0.0.1
-	    <h3>Hello World!</h3><b>Hostname:</b> c79723544b3c<br/><b>Visits:</b> <i>cannot connect to Redis, counter disabled</i> 
-	```
+   ```
+   $ curl http://127.0.0.1
+    <h3>Hello World!</h3><b>Hostname:</b> c79723544b3c<br/><b>Visits:</b> <i>cannot connect to Redis, counter disabled</i> 
+   ```
 
 Run the app in detached mode.
 
-	` $ docker run -d -p 80:80 helloapp `
+   ` $ docker run -d -p 80:80 helloapp `
 
 Use the following command to check the running containers.
 
-	```
-	    $ docker container ls
-	      CONTAINER ID        IMAGE               COMMAND             CREATED             STATUS              PORTS                    NAMES
-	      c79723544b3c        helloapp            "python app.py"     3 minutes ago       Up 4 minutes        127.0.0.1:4000->80/tcp   keen_stonebraker 
-	```
+   ```
+   $ docker container ls
+     CONTAINER ID        IMAGE               COMMAND             CREATED             STATUS              PORTS                    NAMES
+     c79723544b3c        helloapp            "python app.py"     3 minutes ago       Up 4 minutes        127.0.0.1:4000->80/tcp   keen_stonebraker 
+   ```
 
 
 ### Publish the Image
 
 1. Log in to the Docker public registry on your local machine.
 
-	` $ docker login `
+   ` $ docker login `
 
 2. Tag the image
 
-	` $ docker tag <Image> <Username>/<Repository>:<Tag> `
+   ` $ docker tag <Image> <Username>/<Repository>:<Tag> `
 
 	for e.g:
 
-	` $ docker tag helloapp spiritsree/test_app:test `
+   ` $ docker tag helloapp spiritsree/test_app:test `
 
-	``` $ docker images
-	      REPOSITORY               TAG                 IMAGE ID            CREATED             SIZE
-	      helloapp                 latest              d9e8193e0ecf        22 hours ago        148MB
-	      spiritsree/test_app      test                d9e8193e0ecf        3 minutes ago       148MB
-	```
+   ``` $ docker images
+	 REPOSITORY               TAG                 IMAGE ID            CREATED             SIZE
+	 helloapp                 latest              d9e8193e0ecf        22 hours ago        148MB
+	 spiritsree/test_app      test                d9e8193e0ecf        3 minutes ago       148MB
+   ```
 
 3. Upload your tagged image to the repository:
 
-	` $ docker push <Username>/<Repository>:<Tag> `
+   ` $ docker push <Username>/<Repository>:<Tag> `
 
 4. You can run this app from any docker platform.
 
-	` $ docker run -p 80:80 <Username>/<Repository>:<Tag> `
+   ` $ docker run -p 80:80 <Username>/<Repository>:<Tag> `
 
 ## Services
 
