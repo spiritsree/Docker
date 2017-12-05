@@ -200,7 +200,7 @@ $ cat requirements.txt
 
 The app itself.
 
- ```
+ ```python
 $ cat app.py 
   from flask import Flask
   from redis import Redis, RedisError
