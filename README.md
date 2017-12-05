@@ -26,7 +26,7 @@
 
 6. Check docker version.
 
-        ` $ docker --version `
+	` $ docker --version `
 
 ### Ubuntu
 
@@ -121,16 +121,17 @@ To build the app, you need to have all the required files in directory.
 
 The directory with all the required files.
 
-	``` $ ls
-	     Dockerfile		app.py		requirements.txt
 	```
+		$ ls
+	     Dockerfile		app.py		requirements.txt
+		```
 
 Required python modules.
 
 	``` $ cat requirements.txt
 	      Flask
 	      Redis
-	```
+		```
 
 The app itself.
 
@@ -160,11 +161,11 @@ The app itself.
 
         if __name__ == "__main__":
             app.run(host='0.0.0.0', port=80)
-	```
+			```
 
 Dockerfile which contains the definition for the container.
 
-```
+	```
 	$ cat Dockerfile 
 	# Use an official Python runtime as a parent image
 	FROM python:2.7-slim
@@ -186,54 +187,54 @@ Dockerfile which contains the definition for the container.
 	
 	# Run app.py when the container launches
 	CMD ["python", "app.py"]
-```
+	```
 
 To build the app run the following command.
 
-  ` $ docker build -t <appname> . `
+	` $ docker build -t <appname> . `
 
 	e.g:
 
-  ` docker build -t helloapp . `
+	` docker build -t helloapp . `
 
 Image will be added to the local machine docker registry.
 
-``` 
+	``` 
 	  $ docker images 
 	    REPOSITORY                 TAG                 IMAGE ID            CREATED             SIZE
 	    helloapp                   latest              d9e8193e0ecf        22 hours ago        148MB
-```
+		```
 	
 	OR
 
-  ` $ docker image ls `
+	` $ docker image ls `
 
 ### Running the app
 
 To run the app run the command. This will start the container using the image from local machine registry.
 
-  ` $ docker run -p <HostIP>:<HostPort>:<ContainerPort> <ImageName>
+	` $ docker run -p <HostIP>:<HostPort>:<ContainerPort> <ImageName>
 
-  ` $ docker run -p 80:80 helloapp `
+	` $ docker run -p 80:80 helloapp `
 
 Test the app by accessing the url.
 
-```
+	```
 	  $ curl http://127.0.0.1
 	    <h3>Hello World!</h3><b>Hostname:</b> c79723544b3c<br/><b>Visits:</b> <i>cannot connect to Redis, counter disabled</i> 
-```
+		```
 
 Run the app in detached mode.
 
-  ` $ docker run -d -p 80:80 helloapp `
+	` $ docker run -d -p 80:80 helloapp `
 
 Use the following command to check the running containers.
 
-```
+	```
 	    $ docker container ls
 	      CONTAINER ID        IMAGE               COMMAND             CREATED             STATUS              PORTS                    NAMES
 	      c79723544b3c        helloapp            "python app.py"     3 minutes ago       Up 4 minutes        127.0.0.1:4000->80/tcp   keen_stonebraker 
-```
+		```
 
 
 ### Publish the Image
@@ -254,7 +255,7 @@ Use the following command to check the running containers.
 	      REPOSITORY               TAG                 IMAGE ID            CREATED             SIZE
 	      helloapp                 latest              d9e8193e0ecf        22 hours ago        148MB
 	      spiritsree/test_app      test                d9e8193e0ecf        3 minutes ago       148MB
-	```
+		```
 
 3. Upload your tagged image to the repository:
 
@@ -270,21 +271,21 @@ Use the following command to check the running containers.
 
 ## Cheat Sheet
 
-```
-docker build -t <appname> .  		# Create image using this directory's Dockerfile
-docker run -p 80:80 <appname>  		# Run "app" mapping port 80 to 80
-docker run -d -p 80:80 <appname>         # Same thing, but in detached mode
-docker container ls                                # List all running containers
-docker container ls -a             # List all containers, even those not running
-docker container stop <hash>           # Gracefully stop the specified container
-docker container kill <hash>         # Force shutdown of the specified container
-docker container rm <hash>        # Remove specified container from this machine
-docker container rm $(docker container ls -a -q)         # Remove all containers
-docker image ls -a                             # List all images on this machine
-docker image rm <image id>            	# Remove specified image from this machine
-docker image rm $(docker image ls -a -q)   	# Remove all images from this machine
-docker login             # Log in this CLI session using your Docker credentials
-docker tag <image> username/repository:tag  	# Tag <image> for upload to registry
-docker push username/repository:tag            # Upload tagged image to registry
-docker run username/repository:tag                   # Run image from a registry
-```
+	```
+	docker build -t <appname> .  		# Create image using this directory's Dockerfile
+	docker run -p 80:80 <appname>  		# Run "app" mapping port 80 to 80
+	docker run -d -p 80:80 <appname>         # Same thing, but in detached mode
+	docker container ls                                # List all running containers
+	docker container ls -a             # List all containers, even those not running
+	docker container stop <hash>           # Gracefully stop the specified container
+	docker container kill <hash>         # Force shutdown of the specified container
+	docker container rm <hash>        # Remove specified container from this machine
+	docker container rm $(docker container ls -a -q)         # Remove all containers
+	docker image ls -a                             # List all images on this machine
+	docker image rm <image id>            	# Remove specified image from this machine
+	docker image rm $(docker image ls -a -q)   	# Remove all images from this machine
+	docker login             # Log in this CLI session using your Docker credentials
+	docker tag <image> username/repository:tag  	# Tag <image> for upload to registry
+	docker push username/repository:tag            # Upload tagged image to registry
+	docker run username/repository:tag                   # Run image from a registry
+	```
