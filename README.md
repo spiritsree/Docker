@@ -76,7 +76,8 @@
 
    * On production systems, you should install a specific version of Docker CE instead of always using the latest. This output is truncated. List the available versions.
 
-    ``` $ apt-cache madison docker-ce 
+    ``` 
+        $ apt-cache madison docker-ce 
         docker-ce | 17.09.0~ce-0~ubuntu | https://download.docker.com/linux/ubuntu xenial/stable amd64 Packages
     ```
 
