@@ -124,14 +124,14 @@ The directory with all the required files.
 	```
 		$ ls
 	     Dockerfile		app.py		requirements.txt
-		```
+	```
 
 Required python modules.
 
 	``` $ cat requirements.txt
 	      Flask
 	      Redis
-		```
+	```
 
 The app itself.
 
@@ -161,7 +161,7 @@ The app itself.
 
         if __name__ == "__main__":
             app.run(host='0.0.0.0', port=80)
-			```
+	```
 
 Dockerfile which contains the definition for the container.
 
@@ -203,7 +203,7 @@ Image will be added to the local machine docker registry.
 	  $ docker images 
 	    REPOSITORY                 TAG                 IMAGE ID            CREATED             SIZE
 	    helloapp                   latest              d9e8193e0ecf        22 hours ago        148MB
-		```
+	```
 	
 	OR
 
@@ -222,7 +222,7 @@ Test the app by accessing the url.
 	```
 	  $ curl http://127.0.0.1
 	    <h3>Hello World!</h3><b>Hostname:</b> c79723544b3c<br/><b>Visits:</b> <i>cannot connect to Redis, counter disabled</i> 
-		```
+	```
 
 Run the app in detached mode.
 
@@ -234,7 +234,7 @@ Use the following command to check the running containers.
 	    $ docker container ls
 	      CONTAINER ID        IMAGE               COMMAND             CREATED             STATUS              PORTS                    NAMES
 	      c79723544b3c        helloapp            "python app.py"     3 minutes ago       Up 4 minutes        127.0.0.1:4000->80/tcp   keen_stonebraker 
-		```
+	```
 
 
 ### Publish the Image
@@ -255,7 +255,7 @@ Use the following command to check the running containers.
 	      REPOSITORY               TAG                 IMAGE ID            CREATED             SIZE
 	      helloapp                 latest              d9e8193e0ecf        22 hours ago        148MB
 	      spiritsree/test_app      test                d9e8193e0ecf        3 minutes ago       148MB
-		```
+	```
 
 3. Upload your tagged image to the repository:
 
