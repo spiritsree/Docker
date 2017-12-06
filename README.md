@@ -20,6 +20,10 @@
   * [Scaling the app](#scaling-the-app)
   * [Stopping the app and Swarm](#stopping-the-app-and-swarm)
 * [Swarm Clusters](#swarm-clusters)
+  * [Setup Swarm Clusters](#setup-swarm-clusters)
+  * [Deploy App in Swarm Cluster](#deploy-app-in-swarm-cluster)
+  * [Accessing your cluster](#accessing-your-cluster)
+  * [Cleanup and reboot](#cleanup-and-reboot)
 * [Cheat Sheet](#cheat-sheet)
 
 ## Installation
@@ -462,6 +466,165 @@ Take down the swarm.
 $ docker swarm leave --force
 ```
 
+## Swarm Clusters
+
+A swarm is a group of machines (nodes) that are running Docker and joined into a cluster. The docker commands will be executed on a cluster by a swarm manager.
+
+Cluster Strategies - *emptiest node*
+					 *global*
+
+### Setup Swarm Clusters
+
+Enable swarm mode and make the machine a swarm manager.
+
+```
+$ docker swarm init
+```
+
+Join other machines as workers.
+
+```
+$ docker swarm join
+```
+
+Create a couple of VMs using docker-machine, using the VirtualBox driver:
+
+```
+$ docker-machine create --driver virtualbox myvm1
+$ docker-machine create --driver virtualbox myvm2
+```
+
+List the VMs:
+
+```
+$ docker-machine ls
+  NAME    ACTIVE   DRIVER       STATE     URL                         SWARM   DOCKER        ERRORS
+  myvm1   -        virtualbox   Running   tcp://192.168.99.100:2376           v17.06.2-ce   
+  myvm2   -        virtualbox   Running   tcp://192.168.99.101:2376           v17.06.2-ce
+```
+
+The first machine will act as the manager, which executes management commands and authenticates workers to join the swarm, and the second will be a worker.
+
+```
+$ docker-machine ssh myvm1 "docker swarm init --advertise-addr <myvm1 ip>"
+Swarm initialized: current node <node ID> is now a manager.
+
+To add a worker to this swarm, run the following command:
+
+  docker swarm join \
+  --token <token> \
+  <myvm ip>:<port>
+
+To add a manager to this swarm, run 'docker swarm join-token manager' and follow the instructions.
+```
+
+Now, join other VM to join the swarm cluster as worker:
+
+```
+$ docker-machine ssh myvm2 "docker swarm join \
+--token <token> \
+<ip>:2377"
+
+This node joined a swarm as a worker.
+```
+
+List the nodes in the swarm from manager.
+
+```
+$ docker-machine ssh myvm1 "docker node ls"
+  ID                            HOSTNAME            STATUS              AVAILABILITY        MANAGER STATUS
+  brtu9urxwfd5j0zrmkubhpkbd     myvm2               Ready               Active
+  rihwohkh3ph38fhillhhb84sk *   myvm1               Ready               Active              Leader
+```
+
+A VM can leave from swarm using the following command.
+
+```
+$ docker swarm leave
+```
+
+### Deploy App in Swarm Cluster
+
+Configure a docker-machine shell to the swarm manager.
+
+So far, you’ve been wrapping Docker commands in `docker-machine ssh` to talk to the VMs. Another option is to run `docker-machine env <machine>` to get and run a command that configures your current shell to talk to the Docker daemon on the VM.
+
+Run `docker-machine env myvm1` to get the command to configure your shell to talk to myvm1.
+
+```
+$ docker-machine env myvm1
+export DOCKER_TLS_VERIFY="1"
+export DOCKER_HOST="tcp://192.168.99.100:2376"
+export DOCKER_CERT_PATH="/Users/sam/.docker/machine/machines/myvm1"
+export DOCKER_MACHINE_NAME="myvm1"
+# Run this command to configure your shell:
+# eval $(docker-machine env myvm1)
+```
+
+Run the given command to configure your shell to talk to myvm1.
+
+```
+$ eval $(docker-machine env myvm1)
+```
+
+Run docker-machine ls to verify that myvm1 is now the active machine, as indicated by the asterisk next to it.
+
+```
+$ docker-machine ls
+NAME    ACTIVE   DRIVER       STATE     URL                         SWARM   DOCKER        ERRORS
+myvm1   *        virtualbox   Running   tcp://192.168.99.100:2376           v17.06.2-ce   
+myvm2   -        virtualbox   Running   tcp://192.168.99.101:2376           v17.06.2-ce
+```
+
+Deploy the app on the swarm manager
+
+Run the following command to deploy the app on myvm1.
+
+```
+$ docker stack deploy -c docker-compose.yml helloapp
+```
+
+List the running containers using:
+
+```
+$ docker stack ps getstartedlab
+
+ID            NAME                  IMAGE                     NODE   DESIRED STATE
+jq2g3qp8nzwx  helloapp_web.1   		spiritsree/test_app:test  myvm1  Running
+88wgshobzoxl  helloapp_web.2   		spiritsree/test_app:test  myvm2  Running
+vbb1qbkb0o2z  helloapp_web.3   		spiritsree/test_app:test  myvm2  Running
+ghii74p9budx  helloapp_web.4   		spiritsree/test_app:test  myvm1  Running
+0prmarhavs87  helloapp_web.5   		spiritsree/test_app:test  myvm2  Running
+```
+
+### Accessing your cluster
+
+You can access your app from the IP address of either myvm1 or myvm2. The reason both IP addresses work is that nodes in a swarm participate in an ingress routing mesh. This ensures that a service deployed at a certain port within your swarm always has that port reserved to itself, no matter what node is actually running the container.
+
+### Cleanup and reboot
+
+Stacks and swarms
+
+You can tear down the stack with `docker stack rm`. For example:
+
+```
+$ docker stack rm helloapp
+```
+
+You can remove this swarm if you want to with `docker-machine ssh myvm2 "docker swarm leave"` on the worker and `docker-machine ssh myvm1 "docker swarm leave --force"` on the manager.
+
+You can unset the docker-machine environment variables in your current shell with the following command:
+
+```
+eval $(docker-machine env -u)
+```
+
+To restart a machine that’s stopped, run:
+
+```
+$ docker-machine start <machine-name>
+```
+
 
 ## Cheat Sheet
 
@@ -490,5 +653,25 @@ $ docker swarm leave --force
 	docker container ls -q                                      # List container IDs
 	docker stack rm <appname>                             # Tear down an application
 	docker swarm leave --force      # Take down a single node swarm from the manager
+	docker-machine create --driver virtualbox myvm1 # Create a VM (Mac, Win7, Linux)
+	docker-machine create -d hyperv --hyperv-virtual-switch "myswitch" myvm1 # Win10
+	docker-machine env myvm1                # View basic information about your node
+	docker-machine ssh myvm1 "docker node ls"         # List the nodes in your swarm
+	docker-machine ssh myvm1 "docker node inspect <node ID>"        # Inspect a node
+	docker-machine ssh myvm1 "docker swarm join-token -q worker"   # View join token
+	docker-machine ssh myvm1   # Open an SSH session with the VM; type "exit" to end
+	docker node ls                # View nodes in swarm (while logged on to manager)
+	docker-machine ssh myvm2 "docker swarm leave"  # Make the worker leave the swarm
+	docker-machine ssh myvm1 "docker swarm leave -f" # Make master leave, kill swarm
+	docker-machine ls # list VMs, asterisk shows which VM this shell is talking to
+	docker-machine start myvm1            # Start a VM that is currently not running
+	docker-machine env myvm1      # show environment variables and command for myvm1
+	eval $(docker-machine env myvm1)         # Mac command to connect shell to myvm1
+	docker stack deploy -c <file> <app>  # Deploy an app; command shell must be set to talk to manager (myvm1), uses local Compose file
+	docker-machine scp docker-compose.yml myvm1:~ # Copy file to node's home dir (only required if you use ssh to connect to manager and deploy the app)
+	docker-machine ssh myvm1 "docker stack deploy -c <file> <app>"   # Deploy an app using ssh (you must have first copied the Compose file to myvm1)
+	eval $(docker-machine env -u)     # Disconnect shell from VMs, use native docker
+	docker-machine stop $(docker-machine ls -q)               # Stop all running VMs
+	docker-machine rm $(docker-machine ls -q) # Delete all VMs and their disk images
    ```
 
