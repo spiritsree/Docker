@@ -14,6 +14,11 @@
   * [Running the app](#running-the-app)
   * [Publish the Image](#publish-the-image)
 * [Docker Services](#docker-services)
+  * [Define Service](#define-service)
+  * [Start Service](#start-service)
+  * [Test the Service](#test-the-service)
+  * [Scaling the app](#scaling-the-app)
+  * [Stopping the app and Swarm](#stopping-the-app-and-swarm)
 * [Cheat Sheet](#cheat-sheet)
 
 ## Installation
@@ -355,6 +360,106 @@ $ docker run -p 80:80 <Username>/<Repository>:<Tag>
 
 ## Docker Services
 
+A service is a group of containers of the same image:tag. Services make it simple to scale your application.
+
+### Define Service
+
+A `docker-compose.yml` file is a YAML file that defines how Docker containers should behave in production.
+
+```yaml
+version: "3"
+services:
+  web:
+    # replace username/repo:tag with your name and image details
+    image: <username>/<repo>:<tag>
+    deploy:
+      replicas: 5
+      resources:
+        limits:
+          cpus: "0.1"
+          memory: 50M
+      restart_policy:
+        condition: on-failure
+    ports:
+      - "80:80"
+    networks:
+      - webnet
+networks:
+  webnet:
+```
+
+### Start Service
+
+First you need to make the node as a swarm manager or join the swarm cluster.
+
+```
+$ docker swarm init
+```
+
+Now start the service.
+
+```
+$ docker stack deploy -c docker-compose.yml <appname>
+```
+
+e.g:
+
+```
+$ docker stack deploy -c docker-compose.yml helloapp
+```
+### Test the Service
+
+Check the service.
+
+```
+$ docker service ls
+```
+
+In the above e.g: the service name will be `helloapp_web`.
+
+You can list the container by using the command,
+
+```
+$ docker service ps helloapp_web
+```
+
+You can also list the tasks using,
+
+```
+$ docker container ls -q
+```
+
+Test the service using the curl command.
+
+```
+curl -4 http://localhost
+```
+
+Each time you get different hostname which confirms that the load balancing is working.
+
+### Scaling the app
+
+You can scale the app by changing the `replicas` value in `docker-compose.yml`.
+
+```
+$ docker stack deploy -c docker-compose.yml helloapp
+```
+
+Docker will do an in-place update, no need to tear the stack down first or kill any containers.
+
+### Stopping the app and Swarm
+
+Take the app down with docker stack rm:
+
+```
+$ docker stack rm helloapp
+```
+
+Take down the swarm.
+
+```
+$ docker swarm leave --force
+```
 
 
 ## Cheat Sheet
@@ -376,5 +481,13 @@ $ docker run -p 80:80 <Username>/<Repository>:<Tag>
 	docker tag <image> username/repository:tag  	# Tag <image> for upload to registry
 	docker push username/repository:tag            # Upload tagged image to registry
 	docker run username/repository:tag                   # Run image from a registry
+	docker stack ls                                            # List stacks or apps
+	docker stack deploy -c <composefile> <appname>  # Run the specified Compose file
+	docker service ls                 # List running services associated with an app
+	docker service ps <service>                  # List tasks associated with an app
+	docker inspect <task or container>                   # Inspect task or container
+	docker container ls -q                                      # List container IDs
+	docker stack rm <appname>                             # Tear down an application
+	docker swarm leave --force      # Take down a single node swarm from the manager
    ```
 
