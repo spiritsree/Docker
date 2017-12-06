@@ -19,6 +19,7 @@
   * [Test the Service](#test-the-service)
   * [Scaling the app](#scaling-the-app)
   * [Stopping the app and Swarm](#stopping-the-app-and-swarm)
+* [Swarm Clusters](#swarm-clusters)
 * [Cheat Sheet](#cheat-sheet)
 
 ## Installation
