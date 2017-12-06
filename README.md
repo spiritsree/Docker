@@ -470,9 +470,7 @@ $ docker swarm leave --force
 
 A swarm is a group of machines (nodes) that are running Docker and joined into a cluster. The docker commands will be executed on a cluster by a swarm manager.
 
-Cluster Strategies - **emptiest node**
-
-		   - **global**
+Cluster Strategies - **emptiest node** and **global**
 
 ### Setup Swarm Clusters
 
