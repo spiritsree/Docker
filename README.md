@@ -24,6 +24,8 @@
   * [Deploy App in Swarm Cluster](#deploy-app-in-swarm-cluster)
   * [Accessing your cluster](#accessing-your-cluster)
   * [Cleanup and reboot](#cleanup-and-reboot)
+* [Stacks](#stacks)
+  * [Persist Data](#persist-data)
 * [Cheat Sheet](#cheat-sheet)
 
 ## Installation
@@ -622,6 +624,154 @@ To restart a machine that’s stopped, run:
 
 ```
 $ docker-machine start <machine-name>
+```
+
+## Stacks
+
+A stack is a collection of services that make up an application in a specific environment.
+
+Open up `docker-compose.yml` in an editor and replace its contents with the following. Be sure to replace `username/repo:tag` with your image details.
+
+```yaml
+version: "3"
+services:
+  web:
+    # replace username/repo:tag with your name and image details
+    image: username/repo:tag
+    deploy:
+      replicas: 5
+      restart_policy:
+        condition: on-failure
+      resources:
+        limits:
+          cpus: "0.1"
+          memory: 50M
+    ports:
+      - "80:80"
+    networks:
+      - webnet
+  visualizer:
+    image: dockersamples/visualizer:stable
+    ports:
+      - "8080:8080"
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock"
+    deploy:
+      placement:
+        constraints: [node.role == manager]
+    networks:
+      - webnet
+networks:
+  webnet:
+```
+
+`volumes` key, giving the visualizer access to the host’s socket file for Docker, and a `placement` key, ensuring that this service only ever runs on a swarm manager – never a worker.
+
+List he VMs.
+
+```
+$ docker-machine ls
+```
+
+Configure shell to use manager VMs variable.
+
+```
+eval $(docker-machine env myvm1)
+```
+
+Deploy the stack.
+
+```
+$ docker stack deploy -c docker-compose.yml helloapp
+```
+
+Accessing Visualizer.
+
+```
+curl http://192.168.99.101:8080
+```
+
+### Persist Data
+
+Persist data by adding redis service to `docker-compose.yml` file.
+
+```
+version: "3"
+services:
+  web:
+    # replace username/repo:tag with your name and image details
+    image: username/repo:tag
+    deploy:
+      replicas: 5
+      restart_policy:
+        condition: on-failure
+      resources:
+        limits:
+          cpus: "0.1"
+          memory: 50M
+    ports:
+      - "80:80"
+    networks:
+      - webnet
+  visualizer:
+    image: dockersamples/visualizer:stable
+    ports:
+      - "8080:8080"
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock"
+    deploy:
+      placement:
+        constraints: [node.role == manager]
+    networks:
+      - webnet
+  redis:
+    image: redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - /home/docker/data:/data
+    deploy:
+      placement:
+        constraints: [node.role == manager]
+    command: redis-server --appendonly yes
+    networks:
+      - webnet
+networks:
+  webnet:
+```
+
+redis always runs on the manager, so it’s always using the same filesystem.
+redis accesses an arbitrary directory in the host’s file system as /data inside the container, which is where Redis stores data.
+
+The placement constraint you put on the Redis service, ensuring that it always uses the same host.
+The volume you created that lets the container access ./data (on the host) as /data (inside the Redis container). While containers come and go, the files stored on ./data on the specified host will persist, enabling continuity.
+
+Create a ./data directory on the manager:
+
+```
+$ docker-machine ssh myvm1 "mkdir ./data"
+```
+
+Redeploy the stack.
+
+```
+$ docker stack deploy -c docker-compose.yml helloapp
+```
+
+Check the docker services.
+
+```
+$ docker service ls
+ID                  NAME                       MODE                REPLICAS            IMAGE                             PORTS
+x7uij6xb4foj        getstartedlab_redis        replicated          1/1                 redis:latest                      *:6379->6379/tcp
+n5rvhm52ykq7        getstartedlab_visualizer   replicated          1/1                 dockersamples/visualizer:stable   *:8080->8080/tcp
+mifd433bti1d        getstartedlab_web          replicated          5/5                 orangesnap/getstarted:latest    *:80->80/tcp
+```
+
+Now the service shows visit count incrementing.
+
+```
+curl http://192.168.99.101
 ```
 
 
