@@ -782,7 +782,7 @@ curl http://192.168.99.101
     docker run -p 80:80 <appname>  		  		  		# Run "app" mapping port 80 to 80
     docker run -d -p 80:80 <appname>           		          		# Same thing, but in detached mode
     docker container ls                                           		# List all running containers
-    docker container ls -a              		          		# List all containers, even those not running
+    docker container ls -a      OR  docker ps -a        	    		# List all containers, even those not running
     docker container stop <hash>                                  		# Gracefully stop the specified container
     docker container kill <hash>           		  		  	# Force shutdown of the specified container
     docker container rm <hash>         		   		  		# Remove specified container from this machine
