@@ -3,6 +3,7 @@
 ## Contents
 
 * [What is Docker](#what-is-docker)
+* [Images](#images)
 * [Running a Container](#running-a-container)
 * [Cleanup](#cleanup)
 
@@ -26,6 +27,16 @@ Container
 |-------------|  docker commit |-------------------|       |
 |  New Image  | <------------- | Stopped Container |<------|
 |_____________|                |___________________|   
+```
+
+## Images
+
+List all local images.
+
+```
+$ docker images -a
+REPOSITORY          TAG                 IMAGE ID            CREATED             SIZE
+ubuntu              latest              c9d990395902        7 days ago          113MB
 ```
 
 ## Running a Container
