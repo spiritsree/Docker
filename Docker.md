@@ -9,6 +9,7 @@
 * [Stopping a Container](#stopping-a-container)
 * [Images](#images)
 * [Dockerfile](#dockerfile)
+* [Docker Registry](#docker-registry)
 * [Cleanup](#cleanup)
 
 ## What is Docker
@@ -272,6 +273,37 @@ Removing intermediate container f85aacbf1ad8
  ---> 999652aca5b2
 Successfully built 999652aca5b2
 Successfully tagged ubuntu_nc:latest
+```
+
+## Docker Registry
+
+Create a docker registry container.
+
+```
+$ docker run -d -p 5000:5000 --restart=always --name registry registry:2
+Unable to find image 'registry:2' locally
+2: Pulling from library/registry
+81033e7c1d6a: Pull complete 
+b235084c2315: Pull complete 
+c692f3a6894b: Pull complete 
+ba2177f3a70e: Pull complete 
+a8d793620947: Pull complete 
+Digest: sha256:672d519d7fd7bbc7a448d17956ebeefe225d5eb27509d8dc5ce67ecb4a0bce54
+Status: Downloaded newer image for registry:2
+d17b75ca609b80e078fe927c5dae53c8754caa3ae1821ea7537e7337126ff4cd
+```
+Tag and push image to registry.
+
+```
+$ docker tag ubuntu_nc localhost:5000/org_name/ubuntu_nc:v1.0
+$ docker push localhost:5000/org_name/ubuntu_nc:v1.0
+The push refers to repository [localhost:5000/org_name/ubuntu_nc]
+a8de0e025d94: Pushed 
+a5e66470b281: Pushed 
+ac7299292f8b: Pushed 
+e1a9a6284d0d: Pushed 
+fccbfa2912f0: Pushed 
+v1.0: digest: sha256:7d80d9e150e49fd4646b9b9a16ea135b27466b9611df685c4479aafed700ea3a size: 1357
 ```
 
 ## Cleanup
