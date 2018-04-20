@@ -1,4 +1,4 @@
-# Docker
+# Docker Basics
 
 ## Contents
 
@@ -10,6 +10,7 @@
 * [Images](#images)
 * [Dockerfile](#dockerfile)
 * [Docker Registry](#docker-registry)
+* [Docker Image Storage](#docker-image-storage)
 * [Cleanup](#cleanup)
 
 ## What is Docker
@@ -304,6 +305,29 @@ ac7299292f8b: Pushed
 e1a9a6284d0d: Pushed 
 fccbfa2912f0: Pushed 
 v1.0: digest: sha256:7d80d9e150e49fd4646b9b9a16ea135b27466b9611df685c4479aafed700ea3a size: 1357
+```
+
+## Docker Image Storage
+
+save and load helps you in transferring images offline.
+
+```
+$ docker save -o docker_images.tgz ubuntu:16.04 debian
+$ docker load -i docker_images.tgz 
+e1df5dc88d2c: Loading layer [==================================================>]  105.1MB/105.1MB
+Loaded image: debian:latest
+Loaded image: debian:prod
+fccbfa2912f0: Loading layer [==================================================>]  116.9MB/116.9MB
+e1a9a6284d0d: Loading layer [==================================================>]  15.87kB/15.87kB
+ac7299292f8b: Loading layer [==================================================>]  14.85kB/14.85kB
+a5e66470b281: Loading layer [==================================================>]  5.632kB/5.632kB
+a8de0e025d94: Loading layer [==================================================>]  3.072kB/3.072kB
+Loaded image: ubuntu:16.04
+roadbodysat-lm:Python gsree$ docker images
+REPOSITORY          TAG                 IMAGE ID            CREATED             SIZE
+ubuntu              16.04               c9d990395902        7 days ago          113MB
+debian              latest              2b98c9851a37        5 weeks ago         100MB
+debian              prod                2b98c9851a37        5 weeks ago         100MB
 ```
 
 ## Cleanup
