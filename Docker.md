@@ -5,8 +5,10 @@
 * [What is Docker](#what-is-docker)
 * [Running a Container](#running-a-container)
 * [Networking](#networking)
+* [Storage](#storage)
 * [Stopping a Container](#stopping-a-container)
 * [Images](#images)
+* [Dockerfile](#dockerfile)
 * [Cleanup](#cleanup)
 
 ## What is Docker
@@ -122,6 +124,21 @@ hello
 
 ```
 
+## Storage
+
+Permanent volume. The data will be available even after destroying containers. `-v local_dir:shared_dir`.
+
+```
+$ docker run --rm -ti -v /Python:/shared_Volume  ubuntu:14.04  bash 
+```
+
+Ephemeral volume. The data will be destroyed once all the containers inheriting the volume is destroyed.
+
+```
+$ docker run --rm -ti -v /shared_Volume  ubuntu:14.04  bash 
+$ docker run --rm -ti -v /shared_Volume --volumes-from 188947a78295  ubuntu:14.04  bash
+```
+
 ## Stopping a Container
 
 Use exit if connected to container or use kill a detached running container.
@@ -206,6 +223,55 @@ $ docker tag my-ubuntu:prod my-ubuntu:v2.0
 $ docker images
 REPOSITORY          TAG                 IMAGE ID            CREATED             SIZE
 my-ubuntu           v2.0                9a340be12d46        8 minutes ago       223MB
+```
+
+Searching for an image.
+
+```
+$ docker search ubuntu
+NAME                                                      DESCRIPTION                                     STARS               OFFICIAL            AUTOMATED
+ubuntu                                                    Ubuntu is a Debian-based Linux operating sys…   7535                [OK]                
+dorowu/ubuntu-desktop-lxde-vnc                            Ubuntu with openssh-server and NoVNC            179                                     [OK]
+~~~~~~~~~ truncate ~~~~~~~
+```
+
+## Dockerfile
+
+Dockerfile is used to build a custom image.
+
+```
+$ cat Dockerfile 
+FROM ubuntu:16.04
+
+RUN echo "This is a custom build"
+RUN echo "This is Second echo"
+
+CMD echo "Hello World!"
+```
+
+Build the image from Dockerfile.
+
+```
+$ docker build -t ubuntu_nc .
+Sending build context to Docker daemon  3.284MB
+Step 1/4 : FROM ubuntu:16.04
+ ---> c9d990395902
+Step 2/4 : RUN echo "This is a custom build"
+ ---> Running in f618feb446ac
+This is a custom build
+Removing intermediate container f618feb446ac
+ ---> 5e1c92b4bac5
+Step 3/4 : RUN echo "This is Second echo"
+ ---> Running in b2c3c8df0fb0
+This is Second echo
+Removing intermediate container b2c3c8df0fb0
+ ---> 5fa385dc0f52
+Step 4/4 : CMD echo "Hello World!"
+ ---> Running in f85aacbf1ad8
+Removing intermediate container f85aacbf1ad8
+ ---> 999652aca5b2
+Successfully built 999652aca5b2
+Successfully tagged ubuntu_nc:latest
 ```
 
 ## Cleanup
