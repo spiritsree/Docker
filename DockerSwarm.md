@@ -18,7 +18,7 @@ Join a swarm cluster.
 ```
 $ docker swarm join HOST:PORT
 $ docker swarm join-token worker|manager
-$ docker swarm join --token SWMTKN-1-37w48qcgrd2b6vc5hsnilid3xpcjnqerx10bcuhwprgshk0vyu-50ge9ahfbwel1wv27sw6869z0 192.168.65.2:2377
+$ docker swarm join --token SWMTKN-1-xxxxxxxxxxxxxxxxxxxxxxxxxxxxx 192.168.65.2:2377
 ```
 
 Start service.
