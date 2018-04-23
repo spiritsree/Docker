@@ -1,4 +1,4 @@
-# Docker Swarm
+# Docker Orchestration using Swarm
 
 ## Contents
 
