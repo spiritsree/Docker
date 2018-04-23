@@ -28,6 +28,12 @@ $ docker service create --name webapp --replicas=6 nginx
 $ docker service ls
 ```
 
+Update the replcias.
+
+```
+$ docker service update --replicas=10
+```
+
 Leave a swarm cluster.
 
 ```
@@ -64,7 +70,7 @@ $ docker inspect webapp
 
 Stack contains multiple services running in multiple containers in different nodes and configured using a docker stack file.
 
-Deploying a stack.
+Deploying a stack. Updating the yml file and rerunning the command will update the stack.
 
 ```
 $ docker stack deploy --compose-file docker-stack.yml mystack
