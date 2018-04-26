@@ -4,6 +4,7 @@
 
 * [Docker Service](#docker-service)
 * [Docker Stack](#docker-stack)
+* [Troubleshooting Docker Swarm](#troubleshooting-docker-swarm)
 
 ## Docker Service
 
@@ -32,6 +33,12 @@ Update the replcias.
 
 ```
 $ docker service update --replicas=10
+```
+
+Global service. Global service crete exactly one job (container) in each nodes. The default is replicated which create replicas of same container in different nodes.
+
+```
+$ docker service create --mode global --name global-service nginx
 ```
 
 Leave a swarm cluster.
@@ -66,6 +73,19 @@ Inspecting a service.
 $ docker inspect webapp
 ```
 
+Adding a volume to a service.
+
+```
+$ docker service update --mount-add type=volume,source=temp-vol,target=/temp-vol mystack_web
+$ docker service inspect mystack_web | grep vol
+```
+
+Listing local volumes.
+
+```
+$ docker volume ls
+```
+
 ## Docker Stack
 
 Stack contains multiple services running in multiple containers in different nodes and configured using a docker stack file.
@@ -92,4 +112,24 @@ List the services in a stack.
 
 ```
 $ docker stack services mystack
+```
+
+## Troubleshooting Docker Swarm
+
+Service logs will show logs from service.
+
+```
+$ docker service logs SERVICE|STACK
+
+e.g:
+
+$ docker service logs mystack_web
+$ docker service logs -f mystack_web
+```
+
+Docker Swarm node labels give you control over exactly where your services will run.
+
+```
+$ docker node update --label-add PRI NODE1
+$ docker service create --name redis_service --constraint 'node.labels.type == PRI' redis:3.0.6
 ```
